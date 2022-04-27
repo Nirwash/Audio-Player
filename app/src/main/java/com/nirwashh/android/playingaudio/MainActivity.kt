@@ -5,12 +5,12 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import com.google.android.material.slider.Slider
 import com.nirwashh.android.playingaudio.databinding.ActivityMainBinding
-import kotlin.properties.Delegates
+import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var b: ActivityMainBinding
@@ -22,39 +22,47 @@ class MainActivity : AppCompatActivity() {
 
         mediaPlayer = MediaPlayer.create(this, R.raw.stuff)
         val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
-        val maxVolue = (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)) / 15 * 100
-        //переводим в проценты для удобочитаемости, так как макс значение громкости 15
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+        val volume = 0
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0)
 
-        b.slider.valueTo = maxVolue.toFloat()
         b.btnPlay.setOnClickListener { start() }
         b.btnPause.setOnClickListener { pause() }
-        b.btnStop.setOnClickListener { stop() }
         b.btnBack.setOnClickListener { back() }
         b.btnForward.setOnClickListener { forward() }
-        b.slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
 
-            @SuppressLint("RestrictedApi")
-            override fun onStartTrackingTouch(slider: Slider) {
-            }
-
-            @SuppressLint("RestrictedApi")
-            override fun onStopTrackingTouch(slider: Slider) {
-            }
-        })
+        b.slider.valueTo = maxVolume.toFloat()
         b.slider.addOnChangeListener { slider, value, fromUser ->
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, value.toInt(), 0)
         }
 
+        b.seekbar.max = mediaPlayer.duration
+        b.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) mediaPlayer.seekTo(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+        val timer = Timer()
+        timer.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                b.seekbar.progress = mediaPlayer.currentPosition
+            }
+        }, 0, 1000)
+
 
     }
 
-
     private fun start() {
         mediaPlayer.start()
-        if (b.btnPlay.isPressed) {
-            b.btnPlay.animate().scaleX(1.5F).scaleY(1.5F).duration = 500
-            b.btnPause.animate().scaleX(1F).scaleY(1F).duration = 500
-            b.btnStop.animate().scaleX(1F).scaleY(1F).duration = 500
+        if (mediaPlayer.isPlaying) {
+            b.btnPlay.animate().scaleX(0.5F).scaleY(0.5F).duration = 500
+            b.btnPlay.visibility = View.GONE
+            b.btnPause.visibility = View.VISIBLE
+            b.btnPause.animate().scaleX(1.5F).scaleY(1.5F).duration = 500
             b.btnBack.animate().scaleX(1F).scaleY(1F).duration = 500
             b.btnForward.animate().scaleX(1F).scaleY(1F).duration = 500
         }
@@ -62,32 +70,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun pause() {
         mediaPlayer.pause()
-        if (b.btnPause.isPressed) {
-            b.btnPlay.animate().scaleX(1F).scaleY(1F).duration = 500
-            b.btnPause.animate().scaleX(1.5F).scaleY(1.5F).duration = 500
-            b.btnStop.animate().scaleX(1F).scaleY(1F).duration = 500
+        if (!mediaPlayer.isPlaying) {
+            b.btnPause.animate().scaleX(0.5F).scaleY(0.5F).duration = 500
+            b.btnPause.visibility = View.GONE
+            b.btnPlay.visibility = View.VISIBLE
+            b.btnPlay.animate().scaleX(1.5F).scaleY(1.5F).duration = 500
             b.btnBack.animate().scaleX(1F).scaleY(1F).duration = 500
             b.btnForward.animate().scaleX(1F).scaleY(1F).duration = 500
         }
     }
 
-    private fun stop() {
-        mediaPlayer.pause()
-        if (b.btnStop.isPressed) {
-            b.btnPlay.animate().scaleX(1F).scaleY(1F).duration = 500
-            b.btnPause.animate().scaleX(1F).scaleY(1F).duration = 500
-            b.btnStop.animate().scaleX(1F).scaleY(1F).duration = 500
-            b.btnBack.animate().scaleX(1F).scaleY(1F).duration = 500
-            b.btnForward.animate().scaleX(1F).scaleY(1F).duration = 500
-        }
-    }
 
     private fun back() {
         mediaPlayer.pause()
         if (b.btnBack.isPressed) {
             b.btnPlay.animate().scaleX(1F).scaleY(1F).duration = 500
             b.btnPause.animate().scaleX(1F).scaleY(1F).duration = 500
-            b.btnStop.animate().scaleX(1F).scaleY(1F).duration = 500
             b.btnBack.animate().scaleX(1F).scaleY(1F).duration = 500
             b.btnForward.animate().scaleX(1F).scaleY(1F).duration = 500
         }
@@ -98,7 +96,6 @@ class MainActivity : AppCompatActivity() {
         if (b.btnForward.isPressed) {
             b.btnPlay.animate().scaleX(1F).scaleY(1F).duration = 500
             b.btnPause.animate().scaleX(1F).scaleY(1F).duration = 500
-            b.btnStop.animate().scaleX(1F).scaleY(1F).duration = 500
             b.btnBack.animate().scaleX(1F).scaleY(1F).duration = 500
             b.btnForward.animate().scaleX(1F).scaleY(1F).duration = 500
         }

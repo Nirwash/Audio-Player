@@ -20,79 +20,77 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
+        <SeekBar
+            android:id="@+id/seekbar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:layout_marginBottom="140dp"
-            android:max="100"
-            android:visibility="invisible"
+            android:layout_marginBottom="180dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_name_song"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="18sp"
+            android:layout_margin="12dp"
+            app:layout_constraintBottom_toTopOf="@id/seekbar"
+            tools:text="name song"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_play"
             style="@style/iconButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginBottom="24dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="18dp"
             android:background="@android:color/transparent"
-            android:checkable="false"
-            android:cursorVisible="false"
             app:icon="@drawable/ic_play"
             app:layout_constraintBottom_toTopOf="@id/slider"
-            app:layout_constraintEnd_toStartOf="@id/btn_pause"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_pause"
             style="@style/iconButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginBottom="24dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="18dp"
             app:icon="@drawable/ic_pause"
+            android:visibility="gone"
             android:background="@android:color/transparent"
             app:layout_constraintBottom_toTopOf="@id/slider"
-            app:layout_constraintEnd_toStartOf="@id/btn_stop"
-            app:layout_constraintStart_toEndOf="@id/btn_play" />
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_stop"
-            style="@style/iconButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginBottom="24dp"
-            app:icon="@drawable/ic_stop"
-            android:background="@android:color/transparent"
-            app:layout_constraintBottom_toTopOf="@id/slider"
-            app:layout_constraintEnd_toStartOf="@id/btn_back"
-            app:layout_constraintStart_toEndOf="@id/btn_pause" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_back"
-            style="@style/iconButton"
+            style="@style/iconButtonSmall"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="24dp"
+            android:layout_margin="24dp"
             app:icon="@drawable/ic_back"
             android:background="@android:color/transparent"
             app:layout_constraintBottom_toTopOf="@id/slider"
-            app:layout_constraintEnd_toStartOf="@id/btn_forward"
-            app:layout_constraintStart_toEndOf="@id/btn_stop" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_forward"/>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_forward"
-            style="@style/iconButton"
+            style="@style/iconButtonSmall"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="24dp"
+            android:layout_margin="24dp"
             app:icon="@drawable/ic_forward"
             android:background="@android:color/transparent"
             app:layout_constraintBottom_toTopOf="@id/slider"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_back" />
+            app:layout_constraintStart_toEndOf="@id/btn_back"/>
 
 
 
