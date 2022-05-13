@@ -1,20 +1,20 @@
 package com.nirwashh.android.playingaudio
 
-import android.annotation.SuppressLint
 import android.media.AudioManager
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.SeekBar
-import com.google.android.material.slider.Slider
 import com.nirwashh.android.playingaudio.databinding.ActivityMainBinding
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-    lateinit var b: ActivityMainBinding
-    lateinit var mediaPlayer: MediaPlayer
+    private lateinit var b: ActivityMainBinding
+    private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var runnable: Runnable
+    private var handler: Handler = Handler()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         b = ActivityMainBinding.inflate(layoutInflater)
@@ -36,7 +36,12 @@ class MainActivity : AppCompatActivity() {
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, value.toInt(), 0)
         }
 
-        b.seekbar.max = mediaPlayer.duration
+        seekBar()
+
+
+    }
+
+    private fun seekBar() {
         b.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) mediaPlayer.seekTo(progress)
@@ -46,15 +51,38 @@ class MainActivity : AppCompatActivity() {
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
-        val timer = Timer()
-        timer.scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                b.seekbar.progress = mediaPlayer.currentPosition
-            }
-        }, 0, 1000)
 
+        runnable = Runnable {
+            b.seekbar.progress = mediaPlayer.currentSeconds
+
+            val currentPositionText = createTimer(mediaPlayer.currentSeconds)
+            b.tvCurrentPosition.text = currentPositionText
+            val endPositionText = createTimer(mediaPlayer.seconds - mediaPlayer.currentSeconds)
+            b.tvEndPosition.text = endPositionText
+
+            handler.postDelayed(runnable, 1000)
+        }
+        handler.postDelayed(runnable, 1000)
 
     }
+
+    private fun createTimer(duration: Int): String {
+        val minutes = duration / 60
+        val seconds = duration - (minutes * 60)
+        val minuteString = if (minutes < 10) "0$minutes" else "$minutes"
+        val secondString = if (seconds < 10) "0$seconds" else "$seconds"
+        return "$minuteString:$secondString"
+    }
+
+    private val MediaPlayer.seconds: Int
+        get() {
+            return this.duration / 1000
+        }
+
+    private val MediaPlayer.currentSeconds: Int
+        get() {
+            return this.currentPosition/1000
+        }
 
     private fun start() {
         mediaPlayer.start()
